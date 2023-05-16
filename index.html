@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>phonk.js beta</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tonejs/tone@^14.8.6/build/Tone.js"></script>
+</head>
+<body>
+    <button onclick="generatePhonk()">Generar Phonk</button>
+
+    <script>
+        // Escala Phonk
+        const PhonkScale = {
+            Major: [0, 2, 4, 5, 7, 9, 11],
+            Minor: [0, 2, 3, 5, 7, 8, 10],
+            HarmonicMinor: [0, 2, 3, 5, 7, 8, 11]
+        }
+
+        // Opciones del generador de música Phonk
+        const PhonkGeneratorOptions = {
+            rootNote: 60, // Do central
+            scale: PhonkScale.Major,
+            octave: 4,
+            duration: '8n'
+        }
+
+        // Generador de música Phonk
+        class PhonkGenerator {
+            constructor(options) {
+                this.options = options;
+            }
+
+            generateChordSequence(length) {
+                let chordSequence = [];
+
+                // Genera una secuencia de acordes y ritmos
+                for (let i = 0; i < length; i++) {
+                    let chord = [];
+
+                    // Genera una frecuencia aleatoria para el acorde
+                    let baseFrequency = Math.floor(Math.random() * (1000 - 100) + 100);
+
+                    // Crea una nota para cada tono en el acorde
+                    for (let tone of this.options.scale) {
+                        let pitch = this.options.octave * 12 + tone;
+
+                        // Crea una nota con la frecuencia correspondiente al tono en el acorde
+                        let frequency = baseFrequency * Math.pow(2, (tone - this.options.rootNote) / 12.0);
+                        let duration = this.options.duration;
+
+                        chord.push({
+                            pitch: pitch,
+                            frequency: frequency,
+                            duration: duration
+                        });
+                    }
+
+                    // Agrega el acorde a la secuencia de acordes
+                    chordSequence.push(chord);
+                }
+
+                return chordSequence;
+            }
+        }
+
+        function generatePhonk() {
+            // Crea el generador de música Phonk
+            let generator = new PhonkGenerator(PhonkGeneratorOptions);
+
+            // Genera una secuencia de acordes
+            let chordSequence = generator.generateChordSequence(4);
+
+            // Crea un sampler para reproducir los acordes
+            let sampler = new Tone.Sampler({
+                urls: {
+                    "C4": "https://tonejs.github.io/audio/berklee/6.wav"
+                },
+                release: 1,
+                baseUrl: "https://tonejs.github.io/audio/berklee/"
+            }).toMaster();
+
+            // Convierte la secuencia de acordes en una secuencia de eventos Tone.js
+            let events = [];
+            let time = 0;
+            for (let chord of chordSequence) {
+                for (let note of chord) {
+                    events.push({
+                        time: time,
+                        pitch: note.pitch,
+                        velocity: 0.7,
+                        duration: note.duration
+                    });
+                }
+                time += Tone.Time(PhonkGeneratorOptions.duration).toSeconds()
+            }
+
+            // Reproduce la secuencia de acordes utilizando Tone.js
+            Tone.Transport.bpm.value = 120;
+            Tone.Transport.start();
+
+            for (let event of events) {
+                sampler.triggerAttackRelease(event.pitch, event.duration, event.time);
+            }
+        }
+    </script>
+</body>
+</html>
