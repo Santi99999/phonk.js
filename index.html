@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>phonk.js beta</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tonejs/tone@^14.8.6/build/Tone.js"></script>
+    <title>phonk.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.16/dist/Tone.js"></script>
 </head>
 <body>
-    <button onclick="generatePhonk()">Generar Phonk</button>
+    <button onclick="generatePhonk()">Make it ra1n!!</button>
 
     <script>
         // Escala Phonk
@@ -77,7 +77,7 @@
                 },
                 release: 1,
                 baseUrl: "https://tonejs.github.io/audio/berklee/"
-            }).toMaster();
+            }).toDestination();
 
             // Convierte la secuencia de acordes en una secuencia de eventos Tone.js
             let events = [];
@@ -91,17 +91,17 @@
                         duration: note.duration
                     });
                 }
-                time += Tone.Time(PhonkGeneratorOptions.duration).toSeconds()
+                time += Tone.Time(PhonkGeneratorOptions.duration).toSeconds();
             }
 
             // Reproduce la secuencia de acordes utilizando Tone.js
-            Tone.Transport.bpm.value = 120;
+            Tone.Transport.bpm
+            Tone.value = 120;
             Tone.Transport.start();
-
-            for (let event of events) {
-                sampler.triggerAttackRelease(event.pitch, event.duration, event.time);
-            }
+                    for (let event of events) {
+            sampler.triggerAttackRelease(event.pitch, event.duration, event.time);
         }
-    </script>
-</body>
+    }
+</script>
+    </body>
 </html>
